@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>BDM Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;height:100dvh;margin:0;background:#f7f9fc}
+    .card{padding:24px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;box-shadow:0 6px 26px rgba(0,0,0,.06);max-width:520px}
+    .muted{color:#6b7280;font-size:14px;margin:8px 0 16px}
+    #gsiBtn{display:inline-block}
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="card">
+    <h2>Sign in to BDM CRM</h2>
+    <div id="origin" class="muted"></div>
+    <div id="gsiBtn"></div>
+  </div>
+
+  <script>
+    // === CONFIG ===
+    const CLIENT_ID = "249993730842-l7o5qtc0iinrerllpdjc0gi7phk5kjdo.apps.googleusercontent.com"; // your SAME Web client
+    const EXEC_URL  = "https://script.google.com/macros/s/AKfycbxqxVC8XSQAcrqW9j4JEUa_bdKNWIxE9BA7LW42Eai3BWxy9coaPNfqQ7D2uotLyXC4/exec"; // your /exec
+
+    // Show quick sanity info
+    document.getElementById('origin').textContent =
+      'Origin: ' + location.origin + ' • Client: ' + CLIENT_ID.slice(0,12) + '…';
+
+    // Initialize GIS with JS (no data-* attributes)
+    window.onload = function () {
+      try {
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: onCred
+        });
+        google.accounts.id.renderButton(
+          document.getElementById('gsiBtn'),
+          { theme: 'filled_blue', size: 'large', text: 'signin_with' }
+        );
+      } catch (e) {
+        console.error('GIS init failed:', e);
+        alert('Google Sign-In failed to initialize. Hard refresh and try again.');
+      }
+    };
+
+    // Handle the credential and go straight to Index (visit form)
+    function onCred(resp) {
+      console.log('onCred:', resp);
+      const idt = resp && resp.credential;
+      if (!idt) {
+        alert('No credential returned. Please try again.');
+        return;
+      }
+      const url = EXEC_URL + "?page=index&id_token=" + encodeURIComponent(idt);
+      // replace() avoids the Back button returning to the login page
+      location.replace(url);
+    }
+  </script>
+</body>
+</html>
