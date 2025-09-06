@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>BDM Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;height:100dvh;margin:0;background:#f7f9fc}
+    .card{padding:24px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;box-shadow:0 6px 26px rgba(0,0,0,.06);max-width:520px}
+    .muted{color:#6b7280;font-size:14px;margin:8px 0 16px}
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="card">
+    <h2>Sign in to BDM CRM</h2>
+    <div id="origin" class="muted"></div>
+
+    <!-- Google Identity Services -->
+    <div id="g_id_onload"
+         data-client_id="69973562894-tsfr0q80m4924bobvvobpag3e46mqe6h.apps.googleusercontent.com"  <!-- TODO: your SAME Web Client ID -->
+         data-callback="onCred">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
+  </div>
+
+  <script>
+    // TODO: paste your exact EXEC URL here (the one you shared earlier)
+    const EXEC_URL = "https://script.google.com/macros/s/AKfycbzbIBc7zcKWAt6swY3m1nJkhnYgaFcWhQIDDBzjBPelyERnOy6_V6DmjB88yoe7nuVZ/exec";
+
+    document.getElementById('origin').textContent =
+      'Origin: ' + location.origin + '  •  Client: 69973562894-…e6h';
+
+    function onCred(resp){
+      const idt = resp && resp.credential;
+      if(!idt) return;
+      // hand the ID token to your Apps Script app
+      location.href = EXEC_URL + "?id_token=" + encodeURIComponent(idt);
+    }
+  </script>
+</body>
+</html>
